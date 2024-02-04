@@ -1,0 +1,60 @@
+body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    justify-content:center;
+    align-items: center;
+    height: 100vh;
+    background-color: gray;
+}
+
+h1 {
+    text-align: center;
+}
+
+.heading {
+    font-family: monospace;
+    font-size: 20px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 10px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    color: white;
+    border: 2px solid black;
+}
+
+.cell:hover {
+    background-color: lightslategray;
+    cursor: pointer;
+}
+
+#restartButton{
+    background-color: gray; 
+    border: 2px solid black; /* Entfernt die Standard-Border */
+    color: black; /* Weiße Textfarbe */
+    padding: 15px 32px; /* Vertikales und horizontales Padding */
+    text-align: center; /* Zentriert den Text im Button */
+    text-decoration: none; /* Entfernt die Unterstreichung des Textes */
+    display: inline-block; /* Erlaubt die Anwendung von Margin und Padding */
+    font-size: 16px; /* Schriftgröße */
+    margin: 20px 2px; /* Außenabstand oben und unten, links und rechts */
+    border-radius: 8px; /* Rundet die Ecken des Buttons ab */
+}
+
+#restartButton:hover {
+    background-color: lightslategray;
+    cursor: pointer; /* Verändert den Cursor beim Hovern über den Button */
+}
