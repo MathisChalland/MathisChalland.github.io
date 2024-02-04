@@ -4,6 +4,7 @@ let board = [
     [" ", " ", " "],
     [" ", " ", " "],
 ];
+let bot = true;
 
 function nextPlayer() {
     if (currentPlayer == "X") {
@@ -12,48 +13,72 @@ function nextPlayer() {
         currentPlayer = "X";
     }
 }
-function move(cellNum) {
+async function move(cellNum) {
     if (checkGameResult() == -1) {
-        if (isFree(cellNum)) {
-            //The Players Turn
-            board[Math.floor(cellNum / 3)][cellNum % 3] = currentPlayer;
-            nextPlayer();
-            printBoard();
-
-            //The Bots Turn
-            if (checkGameResult() == -1) {
-                let bestMove = findBestMove();
-                console.log("The Bot moves: " + bestMove);
-                board[Math.floor(bestMove / 3)][bestMove % 3] = currentPlayer;
-                console.log("Current game status:" + checkGameResult());
-                nextPlayer();
-                printBoard();
-            }
-            setTimeout(function(){
-                switch (checkGameResult()) {
-                    case 0: alert('Draw'); break;
-                    case 1: alert('Player X Won'); break;
-                    case 2: alert('Player O Won'); break;
-                }
-            },100)
-        } else {
-            console.log("This cell is Taken! Choose another one!");
-        }
+        playerMove(cellNum);
     }
-    
 
+    if(bot == true && checkGameResult() == -1) {
+        await delay(300);
+        botMove();
+    }
+    if(checkGameResult != -1) {
+        await delay(150);
+        gameStatusAlert();
+    }
+}
+function playerMove(cellNum) {
+    if (isFree(cellNum)) {
+        board[Math.floor(cellNum / 3)][cellNum % 3] = currentPlayer;
+        nextPlayer();
+        printBoard();
+    }
+}
+
+function botMove() {
+    if (checkGameResult() == -1) {
+        let bestMove = findBestMove();
+        console.log("The Bot moves: " + bestMove);
+        board[Math.floor(bestMove / 3)][bestMove % 3] = currentPlayer;
+        console.log("Current game status:" + checkGameResult());
+        nextPlayer();
+        printBoard();
+    }
+}
+
+function toggleBot (){
+    if(bot) { bot = false;}
+    else {bot = true;}
+}
+
+function gameStatusAlert() {
+    switch (checkGameResult()) {
+        case 0:
+            alert("Draw");
+            break;
+        case 1:
+            alert("Player X Won");
+            break;
+        case 2:
+            alert("Player O Won");
+            break;
+    }
 }
 function restart() {
     clearBoard();
-    currentPlayer = 'X';
+    currentPlayer = "X";
     printBoard();
 }
 function clearBoard() {
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-            board[i][j] = ' ';
+            board[i][j] = " ";
         }
     }
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function printBoard() {

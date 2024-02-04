@@ -3,11 +3,19 @@
   <head>
     <title>Tic Tac Toe</title>
     <link href="./style.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="./toggleSwitch.css" type="text/css" >
     <script src="./game.js" defer></script>
   </head>
   <body>
     <div class="heading">
       <h1>Tic Tac Toe</h1>
+    </div>
+    <div class="controls">
+      <label class="switch">
+        <input type="checkbox" onclick="toggleBot()" checked>
+        <span class="slider round"></span>
+      </label>
+      <p id="switch-decription">Toggle Bot</p>
     </div>
     <div class="board" id="board">
         <div class="cell" id="cell0" onclick="move(0)"></div>
