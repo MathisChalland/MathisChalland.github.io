@@ -1,9 +1,27 @@
+<!DOCTYPE html>
 <html>
-
-<body>
-  <h1>Mathis</h1>
-  <p>Welcome to my website!</p>
-  <img src="https://content.codecademy.com/articles/github-pages-via-web-app/happy-ice-cream.gif" />
-</body>
-
+  <head>
+    <title>Tic Tac Toe</title>
+    <link href="./style.css" type="text/css" rel="stylesheet">
+    <script src="./game.js" defer></script>
+  </head>
+  <body>
+    <div class="heading">
+      <h1>Tic Tac Toe</h1>
+    </div>
+    <div class="board" id="board">
+        <div class="cell" id="cell0" onclick="move(0)"></div>
+        <div class="cell" id="cell1" onclick="move(1)"></div>
+        <div class="cell" id="cell2" onclick="move(2)"></div>
+        <div class="cell" id="cell3" onclick="move(3)"></div>
+        <div class="cell" id="cell4" onclick="move(4)"></div>
+        <div class="cell" id="cell5" onclick="move(5)"></div>
+        <div class="cell" id="cell6" onclick="move(6)"></div>
+        <div class="cell" id="cell7" onclick="move(7)"></div>
+        <div class="cell" id="cell8" onclick="move(8)"></div>
+    </div>
+    <div class="restart">
+      <button id="restartButton" onclick="restart()">Restart</button>
+    </div>
+  </body>
 </html>
