@@ -20,7 +20,7 @@ function switchTo4x4() {
         document.getElementById('board').classList.remove('small');
         document.getElementById('board').classList.add('large');
         restart();
-        alert('You swiched to 4x4');
+        //alert('You swiched to 4x4');
     }
 }
 
@@ -31,7 +31,7 @@ function switchTo3x3() {
     document.getElementById('board').classList.remove('large');
     document.getElementById('board').classList.add('small');
     restart();
-    alert('You swiched to 3x3');
+   // alert('You swiched to 3x3');
 }
 
 
@@ -93,21 +93,21 @@ function firstBotMove() {
 function toggleBot() {
     if (bot) {
         bot = false;
-        alert('You disabled the bot!');
+       // alert('You disabled the bot!');
     }
     else {
         bot = true;
-        alert('You enabled the bot!');
+        //alert('You enabled the bot!');
     }
 }
 
 function switchStartingPlayer() {
     if (startingPlayer == 'X') {
         startingPlayer = 'O';
-        alert('You are no longer starting first!');
+        //alert('You are no longer starting first!');
     } else {
         startingPlayer = 'X';
-        alert('You are now starting first again!')
+       // alert('You are now starting first again!')
     }
 }
 
@@ -404,3 +404,23 @@ function minimax(depth, alpha, beta, isMaximizing) {
         return bestScore;
     }
 }
+
+function showNotification() {
+    var banner = document.getElementById('notificationBanner');
+    banner.style.display = 'block';
+    banner.classList.remove('hidden');
+    
+    // Banner nach 3 Sekunden automatisch verstecken
+    setTimeout(function() {
+      banner.classList.add('hidden');
+      // Optional: Verstecke das Banner vollständig nach dem Ausblenden
+     // setTimeout(function() {
+      //  banner.style.display = 'none';
+     // }, 500); // Warte die Dauer der Ausblendanimation ab
+    }, 1000);
+  }
+  
+  // Beispiel: Zeige das Banner, wenn eine Einstellung geändert wird
+  document.getElementById('toggleBot').addEventListener('change', showNotification);
+  document.getElementById('startFirst').addEventListener('change', showNotification);
+  document.getElementById('swapMode').addEventListener('change', showNotification);

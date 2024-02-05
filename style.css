@@ -40,6 +40,26 @@ h1 {
     margin-left: 50px;
 }
 
+#notificationBanner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: gray;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    /* Animation */
+    transition: opacity 0.5s, bottom 0.5s;
+  }
+  
+  /* Versteckt das Banner initial */
+  .hidden {
+    opacity: 0;
+    bottom: 10px;
+  }
+  
 .board {
     display: grid;
     grid-gap: 10px;
@@ -55,8 +75,6 @@ h1 {
 .large {
     grid-template-columns: repeat(4, 100px);
 }
-
-    
 
 .cell {
     width: 100px;
