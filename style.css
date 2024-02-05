@@ -21,7 +21,7 @@ h1 {
 .controls {
     position: absolute;
     display: flex;
-    align-items:center;
+    flex-direction: column;
     font-family: monospace;
     height: 100%;
     width: 250px;
@@ -30,15 +30,33 @@ h1 {
     top: 0;
     left: 0;
 }
+
+.switch-div {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
 #switch-description {
     margin-left: 50px;
 }
 
 .board {
     display: grid;
-    grid-template-columns: repeat(3, 100px);
     grid-gap: 10px;
 }
+
+.small {
+    grid-template-columns: repeat(3, 100px);
+}
+.small .extra {
+    display:  none !important;
+}
+
+.large {
+    grid-template-columns: repeat(4, 100px);
+}
+
+    
 
 .cell {
     width: 100px;

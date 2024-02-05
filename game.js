@@ -1,10 +1,39 @@
+let startingPlayer = "X";
 let currentPlayer = "X";
 let board = [
-    [" ", " ", " "],
-    [" ", " ", " "],
-    [" ", " ", " "],
-];
+    [" ", " ", " ", " "],
+    [" ", " ", " ", " "],
+    [" ", " ", " ", " "],
+    [" ", " ", " ", " "]];
 let bot = true;
+let play4x4 = false;
+let boardCellNum = 9;
+let gcNum = 3;
+
+
+function switchTo4x4() {
+    if (play4x4) { switchTo3x3(); }
+    else {
+        play4x4 = true;
+        boardCellNum = 16;
+        gcNum = 4;
+        document.getElementById('board').classList.remove('small');
+        document.getElementById('board').classList.add('large');
+        restart();
+        alert('You swiched to 4x4');
+    }
+}
+
+function switchTo3x3() {
+    play4x4 = false;
+    boardCellNum = 9;
+    gcNum = 3;
+    document.getElementById('board').classList.remove('large');
+    document.getElementById('board').classList.add('small');
+    restart();
+    alert('You swiched to 3x3');
+}
+
 
 function nextPlayer() {
     if (currentPlayer == "X") {
@@ -18,37 +47,68 @@ async function move(cellNum) {
         playerMove(cellNum);
     }
 
-    if(bot == true && checkGameResult() == -1) {
+    if (bot == true && checkGameResult() == -1) {
         await delay(300);
         botMove();
     }
-    if(checkGameResult != -1) {
+    if (checkGameResult != -1) {
         await delay(150);
         gameStatusAlert();
     }
 }
 function playerMove(cellNum) {
     if (isFree(cellNum)) {
-        board[Math.floor(cellNum / 3)][cellNum % 3] = currentPlayer;
-        nextPlayer();
+        board[Math.floor(cellNum / gcNum)][cellNum % gcNum] = currentPlayer;
         printBoard();
+        nextPlayer();
+    } else {
+        alert('That cell is Taken! Choose another one!')
     }
 }
 
 function botMove() {
     if (checkGameResult() == -1) {
         let bestMove = findBestMove();
-        console.log("The Bot moves: " + bestMove);
-        board[Math.floor(bestMove / 3)][bestMove % 3] = currentPlayer;
-        console.log("Current game status:" + checkGameResult());
-        nextPlayer();
+        board[Math.floor(bestMove / gcNum)][bestMove % gcNum] = currentPlayer;
         printBoard();
+        nextPlayer();
     }
 }
 
-function toggleBot (){
-    if(bot) { bot = false;}
-    else {bot = true;}
+function firstBotMove() {
+    const good3x3 = [0, 2, 6, 8, 2];
+    const good4x4 = [0, 3, 12, 15, 3];
+    let randNum = Math.floor(Math.random() * 4);
+
+    if (play4x4 == false) {
+        board[Math.floor(good3x3[randNum] / gcNum)][good3x3[randNum] % gcNum] = currentPlayer;
+    } else {
+        board[Math.floor(good4x4[randNum] / gcNum)][good4x4[randNum] % gcNum] = currentPlayer;
+    }
+    printBoard();
+    nextPlayer();
+
+}
+
+function toggleBot() {
+    if (bot) {
+        bot = false;
+        alert('You disabled the bot!');
+    }
+    else {
+        bot = true;
+        alert('You enabled the bot!');
+    }
+}
+
+function switchStartingPlayer() {
+    if (startingPlayer == 'X') {
+        startingPlayer = 'O';
+        alert('You are no longer starting first!');
+    } else {
+        startingPlayer = 'X';
+        alert('You are now starting first again!')
+    }
 }
 
 function gameStatusAlert() {
@@ -66,12 +126,15 @@ function gameStatusAlert() {
 }
 function restart() {
     clearBoard();
-    currentPlayer = "X";
+    currentPlayer = startingPlayer;
     printBoard();
+    if (startingPlayer == 'O' && bot) {
+        firstBotMove();
+    }
 }
 function clearBoard() {
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
             board[i][j] = " ";
         }
     }
@@ -82,6 +145,13 @@ function delay(ms) {
 }
 
 function printBoard() {
+    if (play4x4 == false) { printBoard3x3() }
+    else {
+        printBoard4x4();
+    }
+}
+
+function printBoard3x3() {
     document.getElementById("cell0").innerHTML = board[0][0];
     document.getElementById("cell1").innerHTML = board[0][1];
     document.getElementById("cell2").innerHTML = board[0][2];
@@ -94,9 +164,29 @@ function printBoard() {
     document.getElementById("cell7").innerHTML = board[2][1];
     document.getElementById("cell8").innerHTML = board[2][2];
 }
+function printBoard4x4() {
+    document.getElementById("cell0").innerHTML = board[0][0];
+    document.getElementById("cell1").innerHTML = board[0][1];
+    document.getElementById("cell2").innerHTML = board[0][2];
+    document.getElementById("cell3").innerHTML = board[0][3];
 
+    document.getElementById("cell4").innerHTML = board[1][0];
+    document.getElementById("cell5").innerHTML = board[1][1];
+    document.getElementById("cell6").innerHTML = board[1][2];
+    document.getElementById("cell7").innerHTML = board[1][3];
+
+    document.getElementById("cell8").innerHTML = board[2][0];
+    document.getElementById("cell9").innerHTML = board[2][1];
+    document.getElementById("cell10").innerHTML = board[2][2];
+    document.getElementById("cell11").innerHTML = board[2][3];
+
+    document.getElementById("cell12").innerHTML = board[3][0];
+    document.getElementById("cell13").innerHTML = board[3][1];
+    document.getElementById("cell14").innerHTML = board[3][2];
+    document.getElementById("cell15").innerHTML = board[3][3];
+}
 function isFree(inputMove) {
-    return board[Math.floor(inputMove / 3)][inputMove % 3] == " ";
+    return board[Math.floor(inputMove / gcNum)][inputMove % gcNum] == " ";
 }
 
 function checkGameResult() {
@@ -113,51 +203,133 @@ function checkGameResult() {
 }
 
 function checkColumn() {
-    for (let i = 0; i <= 2; i++) {
-        if (board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
-            if (board[i][0] == "X") {
-                return 1; //player X Won
+    if (play4x4 == false) {
+        for (let i = 0; i <= 2; i++) {
+            if (board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
+                if (board[i][0] == "X") {
+                    return 1; //player X Won
+                }
+                if (board[i][0] == "O") {
+                    return 2; //player  O Won
+                }
             }
-            if (board[i][0] == "O") {
-                return 2; //player  O Won
+        }
+    }
+    else { //if 4x4 Mode is activated
+        for (let i = 0; i <= 3; i++) {
+            if ((board[i][0] == board[i][1] && board[i][1] == board[i][2]) && (board[i][1] == board[i][2] && board[i][2] == board[i][3])) {
+                if (board[i][1] == 'X') {
+                    return 1; //player 1
+                }
+                if (board[i][1] == 'O') {
+                    return 2; //player  2
+                }
             }
         }
     }
     return 0;
 }
 function checkRow() {
-    for (let i = 0; i <= 2; i++) {
-        if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-            if (board[0][i] == "X") {
-                return 1; //player X Won
+    if (play4x4 == false) {
+        for (let i = 0; i <= 2; i++) {
+            if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
+                if (board[0][i] == "X") {
+                    return 1; //player X Won
+                }
+                if (board[0][i] == "O") {
+                    return 2; //player O Won
+                }
             }
-            if (board[0][i] == "O") {
-                return 2; //player O Won
+        }
+    }
+    else {
+        for (let i = 0; i <= 3; i++) {
+            if ((board[0][i] == board[1][i] && board[1][i] == board[2][i]) && (board[1][i] == board[2][i] && board[2][i] == board[3][i])) {
+                if (board[1][i] == 'X') {
+                    return 1; //player 1 bzw X
+                }
+                if (board[1][i] == 'O') {
+                    return 2; //player 2 bzw. O
+                }
             }
         }
     }
     return 0;
 }
 function checkDiagonal() {
-    if (
-        (board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
-        (board[2][0] == board[1][1] && board[1][1] == board[0][2])
-    ) {
-        if (board[1][1] == "X") {
-            return 1; //player X Won
+    if (play4x4 == false) {
+        if (
+            (board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
+            (board[2][0] == board[1][1] && board[1][1] == board[0][2])
+        ) {
+            if (board[1][1] == "X") {
+                return 1; //player X Won
+            }
+            if (board[1][1] == "O") {
+                return 2; //player O Won
+            }
         }
-        if (board[1][1] == "O") {
-            return 2; //player O Won
+    }
+    else {
+        if ((board[1][1] == board[2][2] && (board[0][0] == board[1][1] || board[3][3] == board[1][1]))) {
+            if (board[1][1] == 'X') {
+                return 1; //player 1
+            }
+            if (board[1][1] == 'O') {
+                return 2; //player 2
+            }
+        }
+        if ((board[1][2] == board[2][1] && (board[0][3] == board[1][2] || board[3][0] == board[1][2]))) {
+            if (board[1][2] == 'X') {
+                return 1; //player 1
+            }
+            if (board[1][2] == 'O') {
+                return 2; //player 2
+            }
+        }
+
+        if (board[1][0] == board[2][1] && board[2][1] == board[3][2]) {
+            if (board[1][0] == 'X') {
+                return 1; //player 1
+            }
+            if (board[1][0] == 'O') {
+                return 2; //player 2
+            }
+        }
+        if (board[0][1] == board[1][2] && board[1][2] == board[2][3]) {
+            if (board[0][1] == 'X') {
+                return 1; //player 1
+            }
+            if (board[0][1] == 'O') {
+                return 2; //player 2
+            }
+        }
+        if (board[1][3] == board[2][2] && board[2][2] == board[3][1]) {
+            if (board[1][3] == 'X') {
+                return 1; //player 1
+            }
+            if (board[1][3] == 'O') {
+                return 2; //player 2
+            }
+        }
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+            if (board[0][2] == 'X') {
+                return 1; //player 1
+            }
+            if (board[0][2] == 'O') {
+                return 2; //player 2
+            }
         }
     }
     return 0;
 }
 function checkDraw() {
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < boardCellNum; i++) {
         if (isFree(i)) {
             return false;
         }
     }
+
     return true;
 }
 
@@ -165,17 +337,17 @@ function findBestMove() {
     let bestMove = -1;
     let bestScore = Number.MIN_SAFE_INTEGER;
 
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < boardCellNum; i++) {
         let move = i;
         if (isFree(move)) {
-            board[Math.floor(move / 3)][move % 3] = "O"; // Assume the bot makes this move
+            board[Math.floor(move / gcNum)][move % gcNum] = "O"; // Assume the bot makes this move
             let score = minimax(
                 0,
                 Number.MIN_SAFE_INTEGER,
                 Number.MAX_SAFE_INTEGER,
                 false
             );
-            board[Math.floor(move / 3)][move % 3] = " "; // Undo the move
+            board[Math.floor(move / gcNum)][move % gcNum] = " "; // Undo the move
 
             if (score > bestScore) {
                 bestScore = score;
@@ -201,12 +373,12 @@ function minimax(depth, alpha, beta, isMaximizing) {
     }
     if (isMaximizing) {
         let bestScore = Number.MIN_SAFE_INTEGER;
-        for (let i = 0; i < 9; i++) {
+        for (let i = 0; i < boardCellNum; i++) {
             if (isFree(i)) {
                 //Checks if the cell is free
-                board[Math.floor(i / 3)][i % 3] = "O"; //Bot Move
+                board[Math.floor(i / gcNum)][i % gcNum] = "O"; //Bot Move
                 let score = minimax(depth + 1, alpha, beta, false);
-                board[Math.floor(i / 3)][i % 3] = " "; // Undo the move
+                board[Math.floor(i / gcNum)][i % gcNum] = " "; // Undo the move
                 bestScore = Math.max(score, bestScore);
                 alpha = Math.max(alpha, score);
                 if (beta <= alpha) {
@@ -217,11 +389,11 @@ function minimax(depth, alpha, beta, isMaximizing) {
         return bestScore;
     } else {
         let bestScore = Number.MAX_SAFE_INTEGER;
-        for (let i = 0; i < 9; i++) {
+        for (let i = 0; i < boardCellNum; i++) {
             if (isFree(i)) {
-                board[Math.floor(i / 3)][i % 3] = "X"; // Player's move
+                board[Math.floor(i / gcNum)][i % gcNum] = "X"; // Player's move
                 let score = minimax(depth + 1, alpha, beta, true);
-                board[Math.floor(i / 3)][i % 3] = " "; // Undo the move
+                board[Math.floor(i / gcNum)][i % gcNum] = " "; // Undo the move
                 bestScore = Math.min(score, bestScore);
                 beta = Math.min(beta, score);
                 if (beta <= alpha) {
